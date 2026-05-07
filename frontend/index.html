@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sole Store</title>
+<link rel="icon" type="image/svg+xml" href="logo.svg">
+</head>
+<body>
+<script>
+  // ── ENTRY POINT ──────────────────────────────────────────
+  // welcome.html shows every new session (sessionStorage resets on tab close)
+  const welcomed = sessionStorage.getItem('sole_welcomed');
+  const userRaw  = localStorage.getItem('sole_user');
+  const user     = userRaw ? JSON.parse(userRaw) : null;
+
+  if (!welcomed) {
+    location.href = 'welcome.html';
+  } else if (!user) {
+    location.href = 'login.html';
+  } else if (user.role === 'admin') {
+    location.href = 'admin.html';
+  } else {
+    location.href = 'client-welcome.html';
+  }
+</script>
+</body>
+</html>

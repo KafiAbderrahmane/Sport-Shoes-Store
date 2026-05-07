@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — Sole Store</title>
+    <link rel="stylesheet" href="style1.css">
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+    /* ── ADMIN BADGE + LOGOUT ── */
+    .user-info{display:flex;align-items:center;gap:12px}
+    .admin-badge{
+      padding:6px 14px;background:#0D3340;color:#F2F3F7;
+      border-radius:50px;font-size:11px;font-weight:700;letter-spacing:1.5px;
+      text-transform:uppercase;box-shadow:0 4px 14px rgba(13,51,64,.35);
+      display:flex;align-items:center;gap:7px;
+    }
+    .logout-btn{
+      padding:9px 20px;border-radius:50px;border:1.5px solid #D0D6E8;
+      background:#F2F3F7;color:#6B7A9F;cursor:pointer;
+      font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;
+      letter-spacing:.5px;transition:all .25s;
+    }
+     .logout-btn:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(13,51,64,.4)}
+.logout-btn:hover span{transform:translateY(-2px)}
+.logout-btn:active{transform:translateY(4px)}
+.logout-btn:active span {transform: translateY(1px) scale(0.97);}
+
+    </style>
+</head>
+<body>
+<div id="app">
+
+    <!-- ── HEADER ── -->
+    <header>
+        <div class="brand">
+            <div class="brand-icon"><img src="logo.svg" alt="Sole Store Logo"></div>
+            <div>
+                <div class="brand-name">Sole Store</div>
+                <div class="brand-tag">Admin Dashboard</div>
+            </div>
+        </div>
+        <nav class="nav-btns">
+            <button class="nav-btn" :class="{ active: view === 'add' }" @click="view='add'">
+                ➕ Add Product
+            </button>
+            <button class="nav-btn" :class="{ active: view === 'list' }" @click="view='list'">
+                📦 View All Products
+            </button>
+        </nav>
+        <div class="user-info">
+            <div class="admin-badge">🛡️ {{ currentUser.username }}</div>
+            <button class="logout-btn" @click="logout"><span>Logout ↗</span></button>
+        </div>
+    </header>
+
+    <!-- ── ADD PRODUCT VIEW ── -->
+    <div v-if="view === 'add'" class="page">
+        <div class="section-header">
+            <div class="section-eyebrow">New Listing</div>
+            <div class="section-title">Add a New Drop</div>
+            <div class="section-sub">Fill in the details below to add a shoe to the catalog</div>
+        </div>
+        <div class="form-wrap">
+            <form class="glass-form" @submit.prevent="addProduct" @mousemove="tiltForm($event)" @mouseleave="resetForm($event)">
+                <div class="form-top-line"></div>
+                <div class="field"><label>Shoe Name</label><input v-model="form.name" placeholder="e.g. Air Zoom Ultra" required></div>
+                <div class="field"><label>Description</label><input v-model="form.description" placeholder="e.g. Lightweight running shoe" required></div>
+                <div class="field"><label>Price (USD)</label><input v-model="form.price" type="number" step="any" min="0" placeholder="e.g. 129.99" required></div>
+                <div class="field"><label>Image URL</label><input v-model="form.image_url" placeholder="e.g. https://static.nike.com/..." required></div>
+                <button type="submit" class="submit-btn"><span>Launch Product →</span></button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ── CATALOG VIEW ── -->
+    <div v-if="view === 'list'" class="page">
+        <div class="section-header">
+            <div class="section-eyebrow">Browse All</div>
+            <div class="section-title">The Collection</div>
+            <div class="section-sub">{{ products.length }} style{{ products.length !== 1 ? 's' : '' }} in the catalog</div>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat"><div class="stat-num">{{ products.length }}</div><div class="stat-label">Products</div></div>
+            <div class="stat">
+                <div class="stat-num">{{ products.length > 0 ? '$' + Math.min(...products.map(p => Number(p.price))) : '—' }}</div>
+                <div class="stat-label">Lowest</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">{{ products.length > 0 ? '$' + Math.max(...products.map(p => Number(p.price))) : '—' }}</div>
+                <div class="stat-label">Highest</div>
+            </div>
+        </div>
+
+        <div class="search-wrap">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input v-model="search" placeholder="Search by name, style, or description…" @input="searchProducts">
+            </div>
+        </div>
+
+        <div class="cards">
+            <div class="card" v-for="p in products" :key="p.id">
+                <div class="card-shine"></div>
+                <div class="card-img-wrap" @mousemove="zoomImage($event)" @mouseleave="resetZoom($event)">
+                    <img :src="p.image_url" :alt="p.name">
+                    <div class="card-img-overlay"></div>
+                    <div class="card-badge">In Stock</div>
+                </div>
+                <div class="card-body">
+                    <div class="card-name">{{ p.name }}</div>
+                    <div class="card-desc">{{ p.description }}</div>
+                    <div class="card-footer">
+                        <div class="card-price"><span class="price-currency">$</span>{{ Number(p.price).toFixed(2) }}</div>
+                        <div class="card-actions">
+                            <button class="action-btn view-btn" @click="openProduct(p)" title="View">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            </button>
+                            <button class="action-btn edit-btn" @click="openEdit(p)" title="Edit">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                            </button>
+                            <button class="action-btn delete-btn" @click="deleteProduct(p.id)" title="Delete">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="empty-state" v-if="products.length === 0">
+                <span class="empty-icon">👟</span>
+                <h3>No Products Yet</h3>
+                <p>Add your first product to see it appear here.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── VIEW MODAL ── -->
+    <transition name="modal">
+        <div class="modal-backdrop" v-if="selectedProduct" @click.self="closeProduct">
+            <div class="modal-card" @mousemove="tiltForm($event)" @mouseleave="resetForm($event)">
+                <button class="modal-close" @click="closeProduct">✕</button>
+                <div class="modal-img-wrap"><img :src="selectedProduct.image_url" :alt="selectedProduct.name"><div class="modal-img-overlay"></div><div class="modal-badge">In Stock</div></div>
+                <div class="modal-body">
+                    <div class="modal-name">{{ selectedProduct.name }}</div>
+                    <div class="modal-desc">{{ selectedProduct.description }}</div>
+                    <div class="modal-divider"></div>
+                    <div class="modal-footer"><div class="modal-price"><span class="price-currency">$</span>{{ Number(selectedProduct.price).toFixed(2) }}</div></div>
+                    <div class="modal-meta">
+                        <div class="modal-meta-item"><span class="meta-label">Category</span><span class="meta-val">Sport Shoes</span></div>
+                        <div class="modal-meta-item"><span class="meta-label">Availability</span><span class="meta-val meta-green">● In Stock</span></div>
+                        <div class="modal-meta-item"><span class="meta-label">Shipping</span><span class="meta-val">Free · 3–5 days</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </transition>
+
+    <!-- ── EDIT MODAL ── -->
+    <transition name="modal">
+        <div class="modal-backdrop" v-if="editProduct" @click.self="closeEdit">
+            <div class="modal-card edit-modal-card" @mousemove="tiltForm($event)" @mouseleave="resetForm($event)">
+                <button class="modal-close" @click="closeEdit">✕</button>
+                <div class="modal-body" style="padding-top:36px">
+                    <div class="modal-name" style="margin-bottom:24px">✏️ Edit Product</div>
+                    <form @submit.prevent="updateProduct">
+                        <div class="field"><label>Shoe Name</label><input v-model="editForm.name" required></div>
+                        <div class="field"><label>Description</label><input v-model="editForm.description" required></div>
+                        <div class="field"><label>Price (USD)</label><input v-model="editForm.price" type="number" step="any" min="0" required></div>
+                        <div class="field"><label>Image URL</label><input v-model="editForm.image_url" required></div>
+                        <button type="submit" class="submit-btn"><span>💾 Save Changes</span></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </transition>
+
+    <div id="toast">✓ Done</div>
+</div>
+
+<!-- Floating video button -->
+<div class="video-trigger-wrap">
+    <div class="video-trigger-btn">
+        <span class="video-btn-icon">▶</span>
+        <span class="video-btn-text">How to use this<br>premium website</span>
+    </div>
+    <div class="video-popup">
+        <div class="video-popup-inner">
+            <video controls autoplay muted loop><source src="demo.mp4" type="video/mp4"></video>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

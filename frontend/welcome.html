@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome — Sole Store</title>
+  <link rel="icon" type="image/svg+xml" href="logo.svg">
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html,
+    body {
+      height: 100%;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow: hidden
+    }
+
+    .bg {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 15% 40%, rgba(107, 122, 159, .22) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 15%, rgba(184, 194, 216, .12) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 90%, rgba(13, 40, 55, .9) 0%, transparent 55%),
+        linear-gradient(160deg, #0D3340 0%, #0a2535 50%, #071a25 100%);
+      animation: bgBreath 10s ease-in-out infinite alternate;
+    }
+
+    @keyframes bgBreath {
+      0% {
+        filter: brightness(.88)
+      }
+
+      100% {
+        filter: brightness(1.06)
+      }
+    }
+
+    .grid {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(184, 194, 216, .04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(184, 194, 216, .04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: gridDrift 20s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes gridDrift {
+      from {
+        background-position: 0 0
+      }
+
+      to {
+        background-position: 60px 60px
+      }
+    }
+
+    .particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0
+    }
+
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(184, 194, 216, .12);
+      animation: floatP var(--dur, 8s) ease-in-out infinite;
+      animation-delay: var(--delay, 0s);
+    }
+
+    @keyframes floatP {
+
+      0%,
+      100% {
+        transform: translateY(0) scale(1);
+        opacity: .25
+      }
+
+      50% {
+        transform: translateY(-50px) scale(1.15);
+        opacity: .6
+      }
+    }
+
+    .center {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    /* ── LOGO — same style as admin brand-icon ── */
+    .logo-wrap {
+      width: 120px;
+      height: 120px;
+      border-radius: 24px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #E9ECF4;
+      padding: 10px;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, .45), 0 0 0 1.5px rgba(184, 194, 216, .3);
+      margin-bottom: 44px;
+      animation: logoIn .9s cubic-bezier(.16, 1, .3, 1) .2s both, logoFloat 5s ease-in-out 1.2s infinite;
+    }
+
+    .logo-wrap img {
+      width: 160%;
+      height: 160%;
+      object-fit: contain;
+      display: block;
+      border-radius: 10px
+    }
+
+    @keyframes logoIn {
+      from {
+        opacity: 0;
+        transform: translateY(50px) scale(.75)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1)
+      }
+    }
+
+    @keyframes logoFloat {
+
+      0%,
+      100% {
+        transform: translateY(0)
+      }
+
+      50% {
+        transform: translateY(-14px)
+      }
+    }
+
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 4.5px;
+      text-transform: uppercase;
+      color: rgba(184, 194, 216, .6);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      animation: fadeUp .7s cubic-bezier(.16, 1, .3, 1) .55s both;
+    }
+
+    .eyebrow::before,
+    .eyebrow::after {
+      content: '';
+      width: 36px;
+      height: 1px;
+      background: rgba(184, 194, 216, .3)
+    }
+
+    .store-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(56px, 11vw, 110px);
+      color: #F2F3F7;
+      line-height: 1;
+      margin-bottom: 22px;
+      letter-spacing: -2px;
+      animation: fadeUp .85s cubic-bezier(.16, 1, .3, 1) .7s both;
+      text-shadow: 0 0 80px rgba(184, 194, 216, .14);
+    }
+
+    .tagline {
+      font-size: 17px;
+      color: rgba(184, 194, 216, .65);
+      font-weight: 400;
+      max-width: 420px;
+      line-height: 1.8;
+      margin-bottom: 56px;
+      animation: fadeUp .85s cubic-bezier(.16, 1, .3, 1) .85s both;
+    }
+
+    /* ── ENTER BUTTON — exact submit-btn style ── */
+    .enter-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      padding: 17px 48px;
+      background: #F2F3F7;
+      color: #0D3340;
+      border: none;
+      border-radius: 14px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 8px 28px rgba(13, 51, 64, .45);
+      animation: fadeUp .85s cubic-bezier(.16, 1, .3, 1) 1s both, btnPulse 3s ease-in-out 2.2s infinite;
+      transition: transform .25s cubic-bezier(.22, 1, .36, 1), box-shadow .25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .enter-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -130%;
+      width: 65%;
+      height: 100%;
+      background: linear-gradient(120deg, transparent, rgba(13, 51, 64, .15), transparent);
+      transform: skewX(-20deg);
+      pointer-events: none;
+    }
+
+    .enter-btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 40px rgba(13, 51, 64, .5)
+    }
+
+    .enter-btn:hover span {
+      transform: translateY(-2px)
+    }
+
+    .enter-btn:hover::after {
+      animation: sweep .9s ease
+    }
+
+    .enter-btn:active {
+      transform: translateY(-2px)
+    }
+
+    .enter-btn:active span {
+      transform: translateY(1px) scale(0.97);
+    }
+
+    .enter-btn span {
+      display: inline;
+      transition: transform .25s cubic-bezier(.22, 1, .36, 1)
+    }
+
+    @keyframes sweep {
+      from {
+        left: -130%
+      }
+
+      to {
+        left: 150%
+      }
+    }
+
+    @keyframes btnPulse {
+
+      0%,
+      100% {
+        box-shadow: 0 8px 28px rgba(13, 51, 64, .45), 0 0 0 0 rgba(242, 243, 247, 0)
+      }
+
+      50% {
+        box-shadow: 0 8px 28px rgba(13, 51, 64, .45), 0 0 0 18px rgba(242, 243, 247, 0)
+      }
+    }
+
+
+    .countdown {
+      margin-top: 28px;
+      font-size: 12px;
+      color: rgba(184, 194, 216, .35);
+      letter-spacing: .5px;
+      animation: fadeUp .8s cubic-bezier(.16, 1, .3, 1) 1.3s both;
+    }
+
+    .countdown span {
+      color: rgba(184, 194, 216, .6);
+      font-weight: 700
+    }
+
+    .progress {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, rgba(13, 51, 64, 0), rgba(184, 194, 216, .6), #F2F3F7);
+      border-radius: 0 3px 3px 0;
+      animation: progress 5s linear 1.5s both;
+    }
+
+    @keyframes progress {
+      from {
+        width: 0
+      }
+
+      to {
+        width: 100%
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    body.exit-anim {
+      animation: exitFade .6s cubic-bezier(.4, 0, 1, 1) both
+    }
+
+    @keyframes exitFade {
+      from {
+        opacity: 1;
+        transform: scale(1)
+      }
+
+      to {
+        opacity: 0;
+        transform: scale(1.05)
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg"></div>
+  <div class="grid"></div>
+  <div class="particles" id="particles"></div>
+
+  <div class="center">
+    <div class="logo-wrap"><img src="logo.svg" alt="Sole Store"></div>
+    <div class="eyebrow">Premium Footwear</div>
+    <h1 class="store-name">Sole Store</h1>
+    <p class="tagline">Discover the finest collection of premium sport shoes, curated for every step you take.</p>
+    <button class="enter-btn" onclick="enterStore()">
+      <span>Enter the Collection →</span>
+    </button>
+    <p class="countdown">Auto-entering in <span id="timer">5</span>s</p>
+  </div>
+  <div class="progress"></div>
+
+  <script>
+    // ── Show every new session (sessionStorage clears on tab close) ──
+    sessionStorage.setItem('sole_welcomed', 'true');
+
+    // Particles
+    const pc = document.getElementById('particles');
+    for (let i = 0; i < 22; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      const s = Math.random() * 70 + 15;
+      p.style.cssText = `width:${s}px;height:${s}px;left:${Math.random() * 100}%;top:${Math.random() * 100}%;--dur:${(Math.random() * 7 + 5).toFixed(1)}s;--delay:${(Math.random() * 5).toFixed(1)}s;opacity:${(Math.random() * .25 + .05).toFixed(2)}`;
+      pc.appendChild(p);
+    }
+
+    // Countdown
+    let secs = 5;
+    const timerEl = document.getElementById('timer');
+    const tick = setInterval(() => {
+      secs--;
+      if (timerEl) timerEl.textContent = secs;
+      if (secs <= 0) { clearInterval(tick); enterStore(); }
+    }, 1000);
+
+    function enterStore() {
+      clearInterval(tick);
+      document.body.classList.add('exit-anim');
+      setTimeout(() => window.location.href = 'login.html', 600);
+    }
+  </script>
+</body>
+
+</html>
