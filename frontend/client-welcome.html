@@ -373,7 +373,7 @@ body.exit{animation:exitOut .5s cubic-bezier(.4,0,1,1) both}
 </div><!-- /page -->
 
 <script>
-  const API = 'http://127.0.0.1:5000';
+  const API = window.location.origin;
 
   // ── AUTH GUARD ──
   const raw  = localStorage.getItem('sole_user');
