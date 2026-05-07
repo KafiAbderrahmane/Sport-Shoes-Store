@@ -8,15 +8,10 @@
 </head>
 <body>
 <script>
-sessionStorage.removeItem('sole_welcomed');
+localStorage.removeItem('sole_user');
+sessionStorage.clear();
 
-const userRaw = localStorage.getItem('sole_user');
-
-if (!userRaw) {
-    location.href = 'welcome.html';
-} else {
-    location.href = 'login.html';
-}
+window.location.href = 'login.html';
 </script>
 </body>
 </html>
