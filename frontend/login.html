@@ -288,7 +288,7 @@ html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;overflow:hidden
 </div><!-- /page -->
 
 <script>
-const API = 'http://127.0.0.1:5000';
+const API = window.location.origin;
 
 // Redirect if already logged in
 const saved = localStorage.getItem('sole_user');
