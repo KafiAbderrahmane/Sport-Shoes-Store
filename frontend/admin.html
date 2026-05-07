@@ -196,4 +196,17 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="app.js"></script>
 </body>
+<script>
+const userRaw = localStorage.getItem('sole_user');
+
+if (!userRaw) {
+    window.location.href = 'login.html';
+} else {
+    const user = JSON.parse(userRaw);
+
+    if (user.role !== 'admin') {
+        window.location.href = 'login.html';
+    }
+}
+</script>
 </html>
