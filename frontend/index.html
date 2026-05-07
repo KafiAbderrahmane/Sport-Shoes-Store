@@ -8,21 +8,15 @@
 </head>
 <body>
 <script>
-  // ── ENTRY POINT ──────────────────────────────────────────
-  // welcome.html shows every new session (sessionStorage resets on tab close)
-  const welcomed = sessionStorage.getItem('sole_welcomed');
-  const userRaw  = localStorage.getItem('sole_user');
-  const user     = userRaw ? JSON.parse(userRaw) : null;
+sessionStorage.removeItem('sole_welcomed');
 
-  if (!welcomed) {
+const userRaw = localStorage.getItem('sole_user');
+
+if (!userRaw) {
     location.href = 'welcome.html';
-  } else if (!user) {
+} else {
     location.href = 'login.html';
-  } else if (user.role === 'admin') {
-    location.href = 'admin.html';
-  } else {
-    location.href = 'client-welcome.html';
-  }
+}
 </script>
 </body>
 </html>
