@@ -71,27 +71,30 @@ new Vue({
         },
 
         searchProducts() {
-           const query = this.search.trim();
+         const query = this.search.trim();
+         const requestId = ++this.searchRequestId;
 
-           if (!query) {
-           this.fetchProducts();
-           return;
-           }
+         const url = query
+          ? `${API}/search?q=${encodeURIComponent(query)}`
+          : `${API}/products`;
 
-           fetch(`${API}/search?q=${encodeURIComponent(query)}`)
-           .then(response => {
+         fetch(url)
+         .then(response => {
             if (!response.ok) {
                 throw new Error('Search request failed');
             }
+
             return response.json();
-            })
-            .then(data => {
-            this.products = data;
-            })
-            .catch(error => {
-              console.error('Search error:', error);
-            });
-            },
+         })
+         .then(data => {
+            if (requestId === this.searchRequestId) {
+                this.products = data;
+            }
+         })
+         .catch(error => {
+            console.error('Search error:', error);
+         });
+         },
 
         // ── VIEW MODAL ────────────────────────────────────
         openProduct(product) {
