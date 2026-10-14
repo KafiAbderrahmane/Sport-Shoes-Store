@@ -70,10 +70,27 @@ new Vue({
         },
 
         searchProducts() {
-            $.get(`${API}/search?q=${this.search}`, (data) => {
-                this.products = data;
+           const query = this.search.trim();
+
+           if (!query) {
+           this.fetchProducts();
+           return;
+           }
+
+           fetch(`${API}/search?q=${encodeURIComponent(query)}`)
+           .then(response => {
+            if (!response.ok) {
+                throw new Error('Search request failed');
+            }
+            return response.json();
+            })
+            .then(data => {
+            this.products = data;
+            })
+            .catch(error => {
+              console.error('Search error:', error);
             });
-        },
+            },
 
         // ── VIEW MODAL ────────────────────────────────────
         openProduct(product) {
