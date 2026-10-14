@@ -28,6 +28,7 @@ new Vue({
         currentUser: currentUser || {},
         products: [],
         search: '',
+        searchRequestId: 0,
         selectedProduct: null,
         editProduct: null,
         editForm: { name: '', description: '', price: '', image_url: '' },
