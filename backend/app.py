@@ -149,23 +149,26 @@ def get_products():
 
 @app.route('/search', methods=['GET'])
 def search_products():
-    q = request.args.get('q', '')
+    q = request.args.get('q', '').strip()
 
     try:
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
 
-        cursor.execute(
-            "SELECT * FROM products WHERE name LIKE %s OR description LIKE %s",
-            ('%' + q + '%', '%' + q + '%')
-        )
+        if not q:
+            cursor.execute("SELECT * FROM products")
+        else:
+            cursor.execute(
+                "SELECT * FROM products WHERE name LIKE %s",
+                ('%' + q + '%',)
+            )
 
         products = cursor.fetchall()
 
         cursor.close()
         conn.close()
 
-        return jsonify(products)
+        return jsonify(products), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
