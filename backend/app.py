@@ -159,8 +159,8 @@ def search_products():
             cursor.execute("SELECT * FROM products")
         else:
             cursor.execute(
-                "SELECT * FROM products WHERE name LIKE %s",
-                ('%' + q + '%',)
+                "SELECT * FROM products WHERE LOWER(name) LIKE LOWER(%s)",
+                (q + '%',)
             )
 
         products = cursor.fetchall()
